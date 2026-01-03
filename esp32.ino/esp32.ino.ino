@@ -31,11 +31,11 @@ void callback(char* topic, byte* message, unsigned int length) {
   Serial.println(msg);
 
   if (msg == "ON") {
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(ledPin, LOW);
     Serial.println("LED LIGADO");
   }
   else if (msg == "OFF") {
-    digitalWrite(ledPin, LOW);
+    digitalWrite(ledPin, HIGH);
     Serial.println("LED DESLIGADO");
   }
 }
