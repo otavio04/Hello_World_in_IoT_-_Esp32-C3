@@ -4,37 +4,11 @@
   <meta charset="UTF-8">
   <title>Controle de LED - ESP32 MQTT</title>
 
+  <!-- Estilo -->
+  <link rel="stylesheet" href="style.css">
+
   <!-- Biblioteca MQTT para navegador -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 60px;
-      background: #f2f2f2;
-    }
-    button {
-      font-size: 22px;
-      padding: 15px 35px;
-      margin: 10px;
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-    }
-    .on {
-      background-color: #2ecc71;
-      color: white;
-    }
-    .off {
-      background-color: #e74c3c;
-      color: white;
-    }
-    #status {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
 </head>
 
 <body>
@@ -46,41 +20,8 @@
 
   <div id="status">Status: conectando...</div>
 
-  <script>
-    // ===== CONFIGURAÇÃO MQTT =====
-    const brokerUrl = "wss://broker.hivemq.com:8884/mqtt";
-    const topic = "otavio/esp32/led";
-
-    // Client ID único
-    const clientId = "web_" + Math.random().toString(16).substr(2, 8);
-
-    // Conectar ao broker
-    const client = mqtt.connect(brokerUrl, {
-      clientId: clientId,
-      clean: true,
-      connectTimeout: 4000
-    });
-
-    client.on("connect", () => {
-      document.getElementById("status").innerText =
-        "Status: conectado ao MQTT";
-      console.log("Conectado ao broker MQTT");
-    });
-
-    client.on("error", (err) => {
-      console.error("Erro MQTT:", err);
-      document.getElementById("status").innerText =
-        "Status: erro na conexão";
-    });
-
-    function ligar() {
-      client.publish(topic, "ON");
-    }
-
-    function desligar() {
-      client.publish(topic, "OFF");
-    }
-  </script>
+  <!-- Script principal -->
+  <script src="app.js"></script>
 
 </body>
 </html>
