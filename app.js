@@ -1,35 +1,41 @@
-// ===== CONFIGURAÇÃO MQTT =====
 const brokerUrl = "wss://broker.hivemq.com:8884/mqtt";
-const topic = "otavio/esp32/led";
 
-// Client ID único
+const topicCmd = "otavio/esp32/led/cmd";
+const topicStatus = "otavio/esp32/led/status";
+
 const clientId = "web_" + Math.random().toString(16).substr(2, 8);
 
-// Conectar ao broker
 const client = mqtt.connect(brokerUrl, {
   clientId: clientId,
   clean: true,
   connectTimeout: 4000
 });
 
-// Eventos MQTT
 client.on("connect", () => {
   document.getElementById("status").innerText =
-    "Status: conectado ao MQTT";
-  console.log("Conectado ao broker MQTT");
+    "Status MQTT: conectado";
+
+  client.subscribe(topicStatus);
 });
 
-client.on("error", (err) => {
-  console.error("Erro MQTT:", err);
-  document.getElementById("status").innerText =
-    "Status: erro na conexão";
+client.on("message", (topic, message) => {
+  if (topic === topicStatus) {
+    const estado = message.toString();
+
+    if (estado === "ON") {
+      document.getElementById("status").innerText =
+        "LED ligado (confirmado pelo ESP32)";
+    } else {
+      document.getElementById("status").innerText =
+        "LED desligado (confirmado pelo ESP32)";
+    }
+  }
 });
 
-// Funções chamadas pelos botões
 function ligar() {
-  client.publish(topic, "ON");
+  client.publish(topicCmd, "ON");
 }
 
 function desligar() {
-  client.publish(topic, "OFF");
+  client.publish(topicCmd, "OFF");
 }

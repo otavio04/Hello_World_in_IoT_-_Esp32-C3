@@ -8,8 +8,9 @@ const char* password = "vpiom1i6";
 // Broker MQTT (HiveMQ público)
 const char* mqtt_server = "broker.hivemq.com";
 
-// Tópico MQTT
-const char* topic = "otavio/esp32/led";
+// Tópicos MQTT
+const char* topicCmd = "otavio/esp32/led/cmd";
+const char* topicStatus = "otavio/esp32/led/status";
 
 // Pino do LED
 const int ledPin = 8;
@@ -20,23 +21,22 @@ PubSubClient client(espClient);
 
 // ====== FUNÇÃO CALLBACK ======
 // É chamada automaticamente quando chega mensagem MQTT
-void callback(char* topic, byte* message, unsigned int length) {
-  Serial.print("Mensagem recebida: ");
-
+void callback(char* topic, byte* payload, unsigned int length) {
   String msg;
+
   for (int i = 0; i < length; i++) {
-    msg += (char)message[i];
+    msg += (char)payload[i];
   }
 
-  Serial.println(msg);
-
-  if (msg == "ON") {
-    digitalWrite(ledPin, LOW);
-    Serial.println("LED LIGADO");
-  }
-  else if (msg == "OFF") {
-    digitalWrite(ledPin, HIGH);
-    Serial.println("LED DESLIGADO");
+  if (String(topic) == topicCmd) {
+    if (msg == "ON") {
+      digitalWrite(LED_PIN, HIGH);
+      client.publish(topicStatus, "ON");
+    }
+    else if (msg == "OFF") {
+      digitalWrite(LED_PIN, LOW);
+      client.publish(topicStatus, "OFF");
+    }
   }
 }
 
